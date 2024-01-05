@@ -1,36 +1,23 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import CharacterCard from "./CharacterCard";
 import { Character } from "../interfaces/interfaces";
 import Paginator from "./Paginator";
-import { getCharacters, CharacterFilter } from "../services/api.service";
+import { getCharacters } from "../services/api.service";
 import CustomButton from "./CustomButton";
 import Loader from "./Loader";
 import { useRouter } from "next/router";
 import { ParsedUrlQueryInput } from "querystring";
-
-const initialState: CharacterFilter = {
-  name: "",
-  status: "",
-  species: "",
-  gender: "",
-};
 
 const FILTER_DELAY = 500;
 const NAME_FILTER_PARAM = "name";
 const PAGE_FILTER_PARAM = "page";
 
 export default function Form() {
-  // actulizar la pagina en la url--> en el siguiente y anterior pasar queryparams
-  // const [filter, setFilter] = useState<CharacterFilter>(initialState);
-
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const [characters, setCharacters] = useState<Character[]>([]);
   const [isLoading, setIsLoading] = useState<Boolean>(false);
-  //   const [error, setError] = useState();
 
-  // const [currentPage, setCurrentPage] = useState<number>(0);
   const [lastPage, setLastPage] = useState<number>(1);
   const [totalCharacters, setTotalCharacters] = useState<number | null>(null);
 
@@ -52,39 +39,12 @@ export default function Form() {
         pathname,
         query,
       },
-      undefined, //alias de la ruta
+      undefined, //alias
       { shallow: true }
     );
   };
 
-  // useDobouncedCallback
-  // const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { value } = e.target;
-
-  //   timeoutRef.current && clearTimeout(timeoutRef.current);
-
-  //   timeoutRef.current = setTimeout(() => {
-  //     const params: Partial<Record<string, string | string[]>> = {
-  //       ...query,
-  //       [NAME_FILTER_PARAM]: value,
-  //     };
-
-  //     !value && delete params[NAME_FILTER_PARAM];
-
-  //     updateQueryParams(params);
-  //     timeoutRef.current = null;
-  //   }, FILTER_DELAY);
-  // };
-
-  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const name = e.target.name;
-  //   const value = e.target.value;
-  //   setFilter({ ...filter, [name]: value });
-  // };
-
   const getPageData = async (page: number) => {
-    // setCurrentPage(page);
-
     setIsLoading(true);
     try {
       const name = inputRef.current?.value || "";
@@ -155,7 +115,6 @@ export default function Form() {
             ref={inputRef}
             name="name"
             className="flex-col border border-gray-300 bg-gray-100 rounded"
-            // onChange={handleFilterChange}
           ></input>
 
           <CustomButton text="Reset" handleClick={reset}></CustomButton>
@@ -204,7 +163,4 @@ export default function Form() {
       )}
     </div>
   );
-
-  //   female, male, genderless or unknown
-  // characters.length no le gusta solo
 }
