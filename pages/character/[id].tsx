@@ -6,16 +6,12 @@ import {
   getLastAppearance,
 } from "../../services/api.service";
 import Image from "next/image";
-import { Character } from "../../interfaces/interfaces";
+import { CharacterStatus, type Character } from "../../interfaces/interfaces";
 import BackButton from "../../components/BackButton";
-import style from "./styles.module.css";
-import Tag from "../../components/LifeStatus";
 import LifeStatus from "../../components/LifeStatus";
 
 export default function Character({}) {
   const router = useRouter();
-
-  //   const {characterData} = useCharacter()
   const [character, setCharacter] = useState<Character>();
 
   useEffect(() => {
@@ -47,7 +43,9 @@ export default function Character({}) {
                   <h1 className="text-4xl text-darkGreen  dark:text-alive">
                     {character?.name}
                   </h1>
-                  <LifeStatus status={character?.status} />
+                  <LifeStatus
+                    status={character.status || CharacterStatus.UNKNOWN}
+                  />
                   <p className=" text-gray dark:text-lightFont">
                     Residence: {character?.location?.name}
                   </p>
