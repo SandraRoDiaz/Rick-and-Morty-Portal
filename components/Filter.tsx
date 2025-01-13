@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, KeyboardEvent } from "react";
 import CharacterCard from "./CharacterCard";
 import { Character } from "../interfaces/interfaces";
 import Paginator from "./Paginator";
@@ -59,7 +59,6 @@ export default function Form() {
 
       const character = await getCharacters({ name }, page);
 
-      console.log("el personaje...", character);
       setCharacters(character.results);
       setLastPage(character.info.pages);
       setTotalCharacters(character.info.count);
@@ -101,6 +100,13 @@ export default function Form() {
     getPageData(previousPage);
   };
 
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== "Enter") {
+      return;
+    }
+    getPageData(1);
+  };
+
   return (
     <div className="w-full min-h-screen bg-lightGray dark:bg-darkBg">
       <div className="flex flex-col justify-center items-center gap-6">
@@ -115,7 +121,8 @@ export default function Form() {
             ref={inputRef}
             name="name"
             className="flex-col border border-gray-300 bg-gray-100 rounded"
-          ></input>
+            onKeyDown={handleKeyDown}
+          />
 
           <CustomButton text="Reset" handleClick={reset}></CustomButton>
           <CustomButton
@@ -143,7 +150,6 @@ export default function Form() {
           </div>
           {characters && characters.length > 0 && (
             <Paginator
-              // currentPage={currentPage}
               currentPage={page}
               lastPage={lastPage}
               onNextPage={showNextPage}
